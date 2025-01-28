@@ -1,0 +1,291 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-7xl mx-auto px-4 py-8">
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-lg font-semibold text-gray-600">Total Services</h3>
+            <p class="text-3xl font-bold text-gray-900"><%= stats.total %></p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-lg font-semibold text-gray-600">Active Services</h3>
+            <p class="text-3xl font-bold text-green-600"><%= stats.active %></p>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow">
+            <h3 class="text-lg font-semibold text-gray-600">Deleted Services</h3>
+            <p class="text-3xl font-bold text-red-600"><%= stats.deleted %></p>
+        </div>
+    </div>
+        <!-- System Metrics -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-600 mb-4">System Resources</h3>
+                <div class="space-y-6">
+                    <!-- CPU Section -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 mb-2">CPU Information</h4>
+                        <div class="space-y-2">
+                            <div>
+                                <span class="text-xs text-gray-500">Model:</span>
+                                <span id="cpuModel" class="text-sm ml-2">Loading...</span>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-500">Cores:</span>
+                                <span id="cpuCores" class="text-sm ml-2">Loading...</span>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-500">Speed:</span>
+                                <span id="cpuSpeed" class="text-sm ml-2">Loading...</span>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-500">Load Average:</span>
+                                <div class="mt-1 relative pt-1">
+                                    <div class="overflow-hidden h-2 text-xs flex rounded bg-blue-200">
+                                        <div id="cpuBar" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- Memory Section -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 mb-2">Memory Usage</h4>
+                        <div class="space-y-2">
+                            <div>
+                                <span class="text-xs text-gray-500">Total:</span>
+                                <span id="memoryTotal" class="text-sm ml-2">Loading...</span>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-500">Free:</span>
+                                <span id="memoryFree" class="text-sm ml-2">Loading...</span>
+                            </div>
+                            <div class="mt-1 relative pt-1">
+                                <div class="overflow-hidden h-2 text-xs flex rounded bg-green-200">
+                                    <div id="memoryBar" class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-green-500" style="width: 0%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- System Info -->
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 mb-2">System Information</h4>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            <div>
+                                <span class="text-xs text-gray-500">Platform:</span>
+                                <span id="systemPlatform" class="ml-2">Loading...</span>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-500">Architecture:</span>
+                                <span id="systemArch" class="ml-2">Loading...</span>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-500">Hostname:</span>
+                                <span id="systemHostname" class="ml-2">Loading...</span>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-500">Uptime:</span>
+                                <span id="systemUptime" class="ml-2">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-600 mb-4">User Activity (24h)</h3>
+                <div style="height: 300px;">
+                    <canvas id="activityChart"></canvas>
+                </div>
+            </div>
+            </div>
+    <!-- Services List -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-800">All Services</h2>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead>
+                    <tr>
+                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</th>
+                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Provider</th>
+                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transactions</th>
+                        <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created</th>
+                        <th class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    <% services.forEach(service => { %>
+                    <tr>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div>
+                                <div class="text-sm font-medium text-gray-900"><%= service.name %></div>
+                                <div class="text-sm text-gray-500">$<%= service.price.toFixed(2) %></div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <div class="text-sm text-gray-900"><%= service.user.firstName %> <%= service.user.lastName %></div>
+                            <div class="text-sm text-gray-500"><%= service.user.email %></div>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 py-1 text-xs rounded-full
+                                <%= service.status === 'ACTIVE' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+                                <%= service.status %>
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <%= service.transactions.length %> transactions
+                            <% if (service.transactions.length > 0) { %>
+                                (<%= service.transactions.filter(t => t.invoice).length %> with invoices)
+                            <% } %>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            <%= service.createdAt.toLocaleDateString() %>
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                            <div class="flex justify-end space-x-2">
+                                <a href="/services/<%= service.id %>" 
+                                   class="text-blue-600 hover:text-blue-900">View</a>
+                                <% if (service.status === 'DELETED' && service.transactions.length > 0) { %>
+                                    <form action="/admin/services/<%= service.id %>?_method=DELETE" 
+                                          method="POST" 
+                                          class="inline"
+                                          onsubmit="return confirm('WARNING: This will permanently delete the service and all related transactions and invoices. This action cannot be undone. Are you sure?')">
+                                        <button type="submit" 
+                                                class="text-red-600 hover:text-red-900">
+                                            Permanently Delete
+                                        </button>
+                                    </form>
+                                <% } %>
+                            </div>
+                        </td>
+                    </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script nonce="<%= nonce %>" src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script nonce="<%= nonce %>" src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script nonce="<%= nonce %>">
+    function formatBytes(bytes) {
+        const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+        if (bytes === 0) return '0 Byte';
+        const i = parseInt(Math.floor(Math.log(bytes) / Math.log(1024)));
+        return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i];
+    }
+
+    function formatUptime(seconds) {
+        const days = Math.floor(seconds / (24 * 60 * 60));
+        const hours = Math.floor((seconds % (24 * 60 * 60)) / (60 * 60));
+        const minutes = Math.floor((seconds % (60 * 60)) / 60);
+        return `${days}d ${hours}h ${minutes}m`;
+    }
+
+    // Update system stats every 5 seconds
+    function updateSystemStats() {
+        fetch('/admin/api/system-stats')
+            .then(response => response.json())
+            .then(stats => {
+                // Update CPU info
+                document.getElementById('cpuModel').textContent = stats.cpu.model;
+                document.getElementById('cpuCores').textContent = `${stats.cpu.cores} cores`;
+                document.getElementById('cpuSpeed').textContent = `${stats.cpu.speed} MHz`;
+                document.getElementById('cpuBar').style.width = `${(stats.cpu.usage / stats.cpu.cores) * 100}%`;
+
+                // Update Memory info
+                document.getElementById('memoryTotal').textContent = formatBytes(stats.memory.total);
+                document.getElementById('memoryFree').textContent = formatBytes(stats.memory.free);
+                document.getElementById('memoryBar').style.width = `${stats.memory.usage}%`;
+
+                // Update System info
+                document.getElementById('systemPlatform').textContent = `${stats.system.platform} (${stats.system.release})`;
+                document.getElementById('systemArch').textContent = stats.system.arch;
+                document.getElementById('systemHostname').textContent = stats.system.hostname;
+                document.getElementById('systemUptime').textContent = formatUptime(stats.system.uptime);
+            });
+    }
+
+    // Initialize activity chart
+    const ctx = document.getElementById('activityChart').getContext('2d');
+    let activityChart;
+
+    function updateActivityChart() {
+        fetch('/admin/api/user-activity')
+            .then(response => response.json())
+            .then(data => {
+                const labels = data.map(item => `${item.hour}:00`);
+                const values = data.map(item => item.count);
+
+                if (activityChart) {
+                    activityChart.destroy();
+                }
+
+                activityChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Transactions',
+                            data: values,
+                            borderColor: 'rgb(99, 102, 241)',
+                            backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: true,
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    stepSize: 1,
+                                    precision: 0
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    display: false
+                                }
+                            }
+                        },
+                        interaction: {
+                            intersect: false,
+                            mode: 'index'
+                        }
+                    }
+                });
+            });
+    }
+
+    // Initial load
+    updateSystemStats();
+    updateActivityChart();
+
+    // Set up intervals
+    setInterval(updateSystemStats, 5000);
+    setInterval(updateActivityChart, 60000);
+</script>
+
+
+<%- include('../partials/footer') %> 

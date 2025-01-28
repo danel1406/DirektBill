@@ -1,0 +1,88 @@
+// This is your Prisma schema file
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  password      String?   // Optional because of Google Auth
+  firstName     String?
+  lastName      String?
+  role          String    @default("USER")
+  googleId      String?   @unique
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  services      Service[]
+  transactions  Transaction[]
+  sessions      Session[]
+}
+
+model Service {
+  id          String    @id @default(uuid())
+  name        String
+  description String?
+  price       Float
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  status      String    @default("ACTIVE") // Values: ACTIVE, DELETED
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  transactions Transaction[]
+}
+
+model Transaction {
+  id          String    @id @default(uuid())
+  amount      Float
+  status      String    @default("PENDING")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+  serviceId   String
+  service     Service   @relation(fields: [serviceId], references: [id])
+  invoice     Invoice?
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
+
+model Invoice {
+  id          String      @id @default(cuid())
+  invoiceNumber String    @unique
+  transaction Transaction @relation(fields: [transactionId], references: [id])
+  transactionId String    @unique
+  status      String      @default("PAID") // PAID, PENDING, CANCELLED
+  issuedDate  DateTime    @default(now())
+  dueDate     DateTime?
+  subtotal    Float
+  tax         Float       @default(0)
+  total       Float
+  notes       String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+}
+
+// enum Role {
+//   ADMIN
+//   USER
+//   SERVICE_PROVIDER
+// }
+
+// enum TransactionStatus {
+//   PENDING
+//   COMPLETED
+//   FAILED
+//   REFUNDED
+// } 

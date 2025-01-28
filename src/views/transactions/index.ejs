@@ -1,0 +1,193 @@
+<%- include('../partials/header') %>
+
+<div class="max-w-6xl mx-auto px-4 py-8">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-gray-900">Transactions</h1>
+  </div>
+
+  <div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <div class="min-w-full divide-y divide-gray-200">
+      <div class="bg-gray-50 px-6 py-3">
+        <div class="grid grid-cols-6 gap-4">
+          <div class="col-span-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Service</div>
+          <div class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</div>
+          <div class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</div>
+          <div class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</div>
+          <div class="text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</div>
+        </div>
+      </div>
+
+      <div class="bg-white divide-y divide-gray-200" id="transactions-list">
+        <% if (transactions.length === 0) { %>
+          <div class="px-6 py-4 text-center text-gray-500">
+            No transactions found
+          </div>
+        <% } else { %>
+          <% transactions.forEach(transaction => { %>
+            <div class="px-6 py-4 transaction-item" id="transaction-<%= transaction.id %>">
+              <div class="grid grid-cols-6 gap-4 items-center">
+                <div class="col-span-2">
+                  <div class="text-sm font-medium text-gray-900">
+                    <%= transaction.service.name %>
+                  </div>
+                  <div class="text-sm text-gray-500">
+                    by <%= transaction.service.user.firstName %> <%= transaction.service.user.lastName %>
+                  </div>
+                </div>
+                <div class="text-sm text-gray-900">
+                  $<%= transaction.amount.toFixed(2) %>
+                </div>
+                <div>
+                  <% if (transaction.status === 'PENDING') { %>
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                      Pending
+                    </span>
+                  <% } else if (transaction.status === 'COMPLETED') { %>
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                      Completed
+                    </span>
+                  <% } else if (transaction.status === 'FAILED') { %>
+                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                      Failed
+                    </span>
+                  <% } %>
+                </div>
+                <div class="text-sm text-gray-500">
+                  <%= new Date(transaction.createdAt).toLocaleDateString() %>
+                </div>
+                <div class="text-right">
+                  <% if (user.id === transaction.service.userId && transaction.status === 'PENDING') { %>
+                    <div class="flex justify-end space-x-2">
+                      <button 
+                        onclick="updateTransactionStatus('<%= transaction.id %>', 'COMPLETED')"
+                        class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
+                      >
+                        Complete
+                      </button>
+                      <button 
+                        onclick="updateTransactionStatus('<%= transaction.id %>', 'FAILED')"
+                        class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const socket = io();
+
+  // Function to update transaction status
+  async function updateTransactionStatus(transactionId, status) {
+    try {
+      const response = await fetch(`/transactions/${transactionId}/status`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+      }
+    } catch (error) {
+      console.error('Error updating transaction:', error);
+      alert('Failed to update transaction status');
+    }
+  }
+
+  // Function to create transaction HTML
+  function createTransactionHTML(transaction) {
+    const statusClasses = {
+      PENDING: 'bg-yellow-100 text-yellow-800',
+      COMPLETED: 'bg-green-100 text-green-800',
+      FAILED: 'bg-red-100 text-red-800'
+    };
+
+    const statusText = transaction.status.charAt(0) + transaction.status.slice(1).toLowerCase();
+    const isServiceProvider = '<%= user?.id %>' === transaction.service.userId;
+    const actionButtons = isServiceProvider && transaction.status === 'PENDING'
+      ? `
+        <div class="flex justify-end space-x-2">
+          <button 
+            onclick="updateTransactionStatus('${transaction.id}', 'COMPLETED')"
+            class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600"
+          >
+            Complete
+          </button>
+          <button 
+            onclick="updateTransactionStatus('${transaction.id}', 'FAILED')"
+            class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600"
+          >
+            Reject
+          </button>
+        </div>
+      `
+      : '';
+
+    return `
+      <div class="px-6 py-4 transaction-item" id="transaction-${transaction.id}">
+        <div class="grid grid-cols-6 gap-4 items-center">
+          <div class="col-span-2">
+            <div class="text-sm font-medium text-gray-900">
+              ${transaction.service.name}
+            </div>
+            <div class="text-sm text-gray-500">
+              by ${transaction.service.user.firstName} ${transaction.service.user.lastName}
+            </div>
+          </div>
+          <div class="text-sm text-gray-900">
+            $${transaction.amount.toFixed(2)}
+          </div>
+          <div>
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClasses[transaction.status]}">
+              ${statusText}
+            </span>
+          </div>
+          <div class="text-sm text-gray-500">
+            ${new Date(transaction.createdAt).toLocaleDateString()}
+          </div>
+          <div class="text-right">
+            ${actionButtons}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // Listen for transaction updates
+  socket.on('transactionUpdate', (data) => {
+    const { type, transaction } = data;
+    const existingTransaction = document.getElementById(`transaction-${transaction.id}`);
+    const transactionsList = document.getElementById('transactions-list');
+
+    switch (type) {
+      case 'created':
+        if (!existingTransaction && transactionsList) {
+          const noTransactionsMessage = transactionsList.querySelector('.text-center');
+          if (noTransactionsMessage) {
+            noTransactionsMessage.remove();
+          }
+          transactionsList.insertAdjacentHTML('afterbegin', createTransactionHTML(transaction));
+        }
+        break;
+      case 'statusUpdated':
+        if (existingTransaction) {
+          existingTransaction.outerHTML = createTransactionHTML(transaction);
+        }
+        break;
+    }
+  });
+</script>
+
+<%- include('../partials/footer') %> 

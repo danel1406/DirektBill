@@ -1,0 +1,34 @@
+    <footer class="bg-white mt-12">
+        <div class="max-w-6xl mx-auto px-4 py-8">
+            <div class="flex justify-between items-center">
+                <div class="text-gray-500">
+                    &copy; <%= new Date().getFullYear() %> DirectBill. All rights reserved.
+                </div>
+                <div class="flex space-x-6">
+                    <a href="#" class="text-gray-400 hover:text-gray-500">
+                        Terms
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-gray-500">
+                        Privacy
+                    </a>
+                    <a href="#" class="text-gray-400 hover:text-gray-500">
+                        Contact
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Global Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Initialize Socket.IO connection
+        const socket = io();
+        
+        // Add any global socket listeners here
+        socket.on('connect', () => {
+            console.log('Connected to server');
+        });
+    </script>
+</body>
+</html> 

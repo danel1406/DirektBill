@@ -1,0 +1,29 @@
+<%- include('partials/header') %>
+
+<div class="min-h-[60vh] flex items-center justify-center">
+  <div class="max-w-2xl mx-auto px-4 py-8 text-center">
+    <div class="bg-white shadow-lg rounded-lg p-8">
+      <h1 class="text-4xl font-bold text-red-600 mb-4">
+        <%= error.status || 500 %>
+      </h1>
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+        <%= message || 'Something went wrong!' %>
+      </h2>
+      <% if (process.env.NODE_ENV === 'development' && error.stack) { %>
+        <div class="mt-4 p-4 bg-gray-100 rounded-lg">
+          <pre class="text-left text-sm text-gray-700 whitespace-pre-wrap">
+            <%= error.stack %>
+          </pre>
+        </div>
+      <% } %>
+      <div class="mt-8">
+        <a href="/" class="text-blue-500 hover:text-blue-700">
+          <span class="mr-2">←</span>
+          Back to Home
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %> 
