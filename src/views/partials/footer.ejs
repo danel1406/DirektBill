@@ -1,27 +1,35 @@
-    <footer class="bg-white mt-12">
+    <!-- Footer -->
+    <footer class="bg-gray-800 border-t border-gray-700 mt-12">
         <div class="max-w-6xl mx-auto px-4 py-8">
             <div class="flex justify-between items-center">
-                <div class="text-gray-500">
-                    &copy; <%= new Date().getFullYear() %> DirectBill. All rights reserved.
+                <div class="flex items-center space-x-2 text-gray-400">
+                    <i data-lucide="copyright" class="w-4 h-4"></i>
+                    <span><%= new Date().getFullYear() %> DirectBill. All rights reserved.</span>
                 </div>
                 <div class="flex space-x-6">
-                    <a href="#" class="text-gray-400 hover:text-gray-500">
-                        Terms
+                    <a href="#" class="flex items-center space-x-1 text-gray-400 hover:text-blue-400 transition-colors duration-200">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                        <span>Terms</span>
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-gray-500">
-                        Privacy
+                    <a href="#" class="flex items-center space-x-1 text-gray-400 hover:text-blue-400 transition-colors duration-200">
+                        <i data-lucide="shield" class="w-4 h-4"></i>
+                        <span>Privacy</span>
                     </a>
-                    <a href="#" class="text-gray-400 hover:text-gray-500">
-                        Contact
+                    <a href="#" class="flex items-center space-x-1 text-gray-400 hover:text-blue-400 transition-colors duration-200">
+                        <i data-lucide="mail" class="w-4 h-4"></i>
+                        <span>Contact</span>
                     </a>
                 </div>
             </div>
         </div>
     </footer>
-    
+
     <!-- Global Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
         // Initialize Socket.IO connection
         const socket = io();
         
@@ -31,4 +39,4 @@
         });
     </script>
 </body>
-</html> 
+</html>

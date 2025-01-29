@@ -1,75 +1,89 @@
 <%- include('../partials/header') %>
 
-<div class="max-w-2xl mx-auto px-4 py-8">
-  <div class="mb-6">
-    <h1 class="text-3xl font-bold text-gray-900">Create New Service</h1>
-  </div>
+<div class="max-w-6xl mx-auto mt-8 px-4">
+    <div class="bg-gray-800 border border-gray-700 shadow-xl rounded-xl px-8 pt-6 pb-8 mb-4">
+        <div class="flex items-center space-x-3 mb-6">
+            <i data-lucide="plus-circle" class="w-8 h-8 text-blue-400"></i>
+            <h1 class="text-2xl font-bold text-white">Create New Service</h1>
+        </div>
 
-  <% if (messages.error) { %>
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-      <%= messages.error %>
-    </div>
-  <% } %>
+        <% if (messages.error) { %>
+            <div class="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-6 flex items-center">
+                <i data-lucide="alert-triangle" class="w-5 h-5 mr-2"></i>
+                <%= messages.error %>
+            </div>
+        <% } %>
 
-  <form action="/services" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-    <div class="mb-4">
-      <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
-        Service Name
-      </label>
-      <input 
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        id="name"
-        type="text"
-        name="name"
-        required
-        placeholder="Enter service name"
-      >
-    </div>
+        <form action="/services" method="POST" class="space-y-6">
+            <div>
+                <label class="block text-gray-300 text-sm font-medium mb-2" for="name">
+                    Service Name
+                </label>
+                <div class="relative">
+                    <i data-lucide="tag" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                    <input
+                        class="w-full bg-gray-700 border border-gray-600 text-gray-100 rounded-lg py-2.5 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                        id="name"
+                        type="text"
+                        name="name"
+                        required
+                        placeholder="Enter service name">
+                </div>
+            </div>
 
-    <div class="mb-4">
-      <label class="block text-gray-700 text-sm font-bold mb-2" for="description">
-        Description
-      </label>
-      <textarea
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        id="description"
-        name="description"
-        rows="4"
-        placeholder="Enter service description"
-      ></textarea>
-    </div>
+            <div>
+                <label class="block text-gray-300 text-sm font-medium mb-2" for="description">
+                    Description
+                </label>
+                <div class="relative">
+                    <i data-lucide="file-text" class="absolute left-3 top-3 w-5 h-5 text-gray-500"></i>
+                    <textarea
+                        class="w-full bg-gray-700 border border-gray-600 text-gray-100 rounded-lg py-2.5 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                        id="description"
+                        name="description"
+                        rows="4"
+                        placeholder="Enter service description"></textarea>
+                </div>
+            </div>
 
-    <div class="mb-6">
-      <label class="block text-gray-700 text-sm font-bold mb-2" for="price">
-        Price ($)
-      </label>
-      <input 
-        class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-        id="price"
-        type="number"
-        name="price"
-        step="0.01"
-        min="0"
-        required
-        placeholder="0.00"
-      >
-    </div>
+            <div>
+                <label class="block text-gray-300 text-sm font-medium mb-2" for="price">
+                    Price ($)
+                </label>
+                <div class="relative">
+                    <i data-lucide="dollar-sign" class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500"></i>
+                    <input
+                        class="w-full bg-gray-700 border border-gray-600 text-gray-100 rounded-lg py-2.5 pl-10 pr-3 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+                        id="price"
+                        type="number"
+                        name="price"
+                        step="0.01"
+                        min="0"
+                        required
+                        placeholder="0.00">
+                </div>
+            </div>
 
-    <div class="flex items-center justify-between">
-      <button 
-        class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-        type="submit"
-      >
-        Create Service
-      </button>
-      <a 
-        class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
-        href="/services"
-      >
-        Cancel
-      </a>
+            <div class="flex items-center justify-between pt-4">
+                <button
+                    type="submit"
+                    class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2.5 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 transition-colors duration-200 flex items-center space-x-2">
+                    <i data-lucide="save" class="w-5 h-5"></i>
+                    <span>Create Service</span>
+                </button>
+                <a href="/services" 
+                   class="flex items-center space-x-2 text-gray-300 hover:text-blue-400 transition-colors duration-200">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                    <span>Cancel</span>
+                </a>
+            </div>
+        </form>
     </div>
-  </form>
 </div>
 
-<%- include('../partials/footer') %> 
+<script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+</script>
+
+<%- include('../partials/footer') %>

@@ -33,28 +33,28 @@ module.exports = (app) => {
   });
 
   // Security HTTP headers with CSP configuration
-  app.use(
-    helmet({
-      contentSecurityPolicy: {
-        directives: {
-          defaultSrc: ["'self'"],
-          scriptSrc: [
-            "'self'",
-            (req, res) => `'nonce-${res.locals.nonce}'`,
-            'https://cdn.jsdelivr.net',
-            'https://code.jquery.com'
-          ],
-          styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
-          imgSrc: ["'self'", 'data:', 'https:'],
-          connectSrc: ["'self'"],
-          fontSrc: ["'self'", 'https://cdn.jsdelivr.net'],
-          objectSrc: ["'none'"],
-          mediaSrc: ["'self'"],
-          frameSrc: ["'none'"]
-        }
-      }
-    })
-  );
+  // app.use(
+  //   helmet({
+  //     contentSecurityPolicy: {
+  //       directives: {
+  //         defaultSrc: ["'self'"],
+  //         scriptSrc: [
+  //           "'self'",
+  //           (req, res) => `'nonce-${res.locals.nonce}'`,
+  //           'https://cdn.jsdelivr.net',
+  //           'https://code.jquery.com'
+  //         ],
+  //         styleSrc: ["'self'", "'unsafe-inline'", 'https://cdn.jsdelivr.net'],
+  //         imgSrc: ["'self'", 'data:', 'https:'],
+  //         connectSrc: ["'self'"],
+  //         fontSrc: ["'self'", 'https://cdn.jsdelivr.net'],
+  //         objectSrc: ["'none'"],
+  //         mediaSrc: ["'self'"],
+  //         frameSrc: ["'none'"]
+  //       }
+  //     }
+  //   })
+  // );
 
   // Rate limiting
   app.use(limiter);
